@@ -45,6 +45,7 @@
 #else
 	/* nix */
 	#include <bluetooth/bluetooth.h>
+	#include <sys/time.h>
 #endif
 
 #ifdef WIIUSE_INTERNAL_H_INCLUDED
@@ -113,6 +114,17 @@
 #define GUITAR_HERO_3_BUTTON_MINUS		0x1000
 #define GUITAR_HERO_3_BUTTON_STRUM_DOWN	0x4000
 #define GUITAR_HERO_3_BUTTON_ALL		0xFEFF
+
+/* speaker frequencies */
+#define SPEAKER_FREQ_4200			0x0B
+#define SPEAKER_FREQ_3920			0x0C
+#define SPEAKER_FREQ_3640			0x0D
+#define SPEAKER_FREQ_3360			0x0E
+#define SPEAKER_FREQ_3130			0x0F
+#define SPEAKER_FREQ_2940			0x10
+#define SPEAKER_FREQ_2760			0x11
+#define SPEAKER_FREQ_2610			0x12
+#define SPEAKER_FREQ_2470			0x13
 
 
 /* wiimote option flags */
@@ -190,6 +202,9 @@ typedef enum ir_position_t {
 #define WIIUSE_USING_EXP(wm)			((wm->state & 0x040) == 0x040)
 #define WIIUSE_USING_IR(wm)				((wm->state & 0x080) == 0x080)
 #define WIIUSE_USING_SPEAKER(wm)		((wm->state & 0x100) == 0x100)
+#define WIIUSE_SPEAKER_MUTE(wm)			((wm->state & 0x4000) == 0x4000)
+#define WIIUSE_SPEAKER_PLAYING(wm)		((wm->state & 0x8000) == 0x8000)
+#define WIIMOTE_IS_CONNECTED(wm)		((wm->state & 0x0008) == 0x0008)
 
 #define WIIUSE_IS_LED_SET(wm, num)		((wm->leds & WIIMOTE_LED_##num) == WIIMOTE_LED_##num)
 
@@ -645,7 +660,8 @@ WIIUSE_EXPORT extern void wiiuse_set_nunchuk_accel_threshold(struct wiimote_t* w
 
 /* speaker.c */
 WIIUSE_EXPORT extern void wiiuse_set_speaker(struct wiimote_t* wm, int status);
-WIIUSE_EXPORT extern void wiiuse_play_sound(struct wiimote_t* wm, byte *data, int size);
+WIIUSE_EXPORT extern void wiiuse_mute_speaker(struct wiimote_t* wm, int status);
+WIIUSE_EXPORT extern void wiiuse_play_sound(struct wiimote_t* wm, byte *data, int size, byte freq);
 
 
 #ifdef __cplusplus
