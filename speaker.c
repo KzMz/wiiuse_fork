@@ -65,13 +65,13 @@ void wiiuse_play_sound(struct wiimote_t* wm, byte* data, int size, byte freq) {
 	if(!wm) return;
 	if(!data) return;
 	
-	byte* sound_report[21];
+	byte sound_report[21];
 	int written = 0;
 	int frame = 0;
 	//TODO: let's change volume!
 	byte vol = 0x40;
 	struct timeval start, end; // *nix only
-	float frame_ms = 1000/(freq_hz/ 40.0);
+	float frame_ms = 1000/(3130/ 40.0);
 	int to_be_written, left, entries;
 	byte* data_ptr = data;
 	
@@ -84,15 +84,15 @@ void wiiuse_play_sound(struct wiimote_t* wm, byte* data, int size, byte freq) {
 	byte conf[7] = { 0x00, 0x00, 0x00, freq, vol, 0x00, 0x00 };
 	
 	byte buf = 0x01;
-	wiiuse_write_data(wm, WM_REG_SPEAKER_REG3, buf, 1);
+	wiiuse_write_data(wm, WM_REG_SPEAKER_REG3, &buf, 1);
 	
 	buf = 0x08;
-	wiiuse_write_data(wm, WM_REG_SPEAKER_REG1, buf, 1);
+	wiiuse_write_data(wm, WM_REG_SPEAKER_REG1, &buf, 1);
 	
 	wiiuse_write_data(wm, WM_REG_SPEAKER_REG1, conf, 7);
 	
 	buf = 0x01;
-	wiiuse_write_data(wm, WM_REG_SPEAKER_REG2, buf, 1);
+	wiiuse_write_data(wm, WM_REG_SPEAKER_REG2, &buf, 1);
 	
 	wiiuse_mute_speaker(wm, 0);
 	
@@ -103,29 +103,28 @@ void wiiuse_play_sound(struct wiimote_t* wm, byte* data, int size, byte freq) {
 	gettimeofday(&start, 0);
 	
 	WIIMOTE_ENABLE_STATE(wm, WIIMOTE_STATE_SPEAKER_PLAYING);
-	
+	printf("start\n");
 	//TODO: let's play in threads!
 	while(written < size) {
 		left = size - written;
-		if(left < 40)
+		if(left < 20)
 			to_be_written = left;
 		else
-			to_be_written = 40;
-			
-		entries = (to_be_written + 1) >> 1;
+			to_be_written = 20;
 						
-		sound_report[0] = (byte)(entries<<3);
-		
+		sound_report[0] = (byte)(to_be_written<<3);
+		printf("%d\n", to_be_written);
 		i = 0;
-		for(; i < entries; i++) .
+		for(; i < to_be_written; i++)
 			sound_report[1 + i] = data_ptr[i];
 		wiiuse_send(wm, WM_CMD_SPEAKER_DATA, sound_report, 21);
-		data_ptr += to_be_written / 2;
-		
+		data_ptr += to_be_written;
+		written += to_be_written;
+		printf("%d\n", written);
 		frame++;
 		
 		gettimeofday(&end, 0);
-		while((end.tv_sec - start.tv_sec) < (int)(frame * frame_ms))
+		//while((end.tv_sec - start.tv_sec) < (int)(frame * frame_ms))
 			sleep(1);
 	}
 	
