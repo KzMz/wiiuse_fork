@@ -190,6 +190,8 @@ typedef enum ir_position_t {
 #define WIIUSE_USING_EXP(wm)			((wm->state & 0x040) == 0x040)
 #define WIIUSE_USING_IR(wm)				((wm->state & 0x080) == 0x080)
 #define WIIUSE_USING_SPEAKER(wm)		((wm->state & 0x100) == 0x100)
+#define WIIUSE_SPEAKER_MUTE(wm)			((wm->state & 0x4000) == 0x4000)
+#define WIIUSE_SPEAKER_PLAYING(wm)		((wm->state & 0x8000) == 0x8000)
 
 #define WIIUSE_IS_LED_SET(wm, num)		((wm->leds & WIIMOTE_LED_##num) == WIIMOTE_LED_##num)
 
