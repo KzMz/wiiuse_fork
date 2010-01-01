@@ -645,7 +645,9 @@ WIIUSE_EXPORT extern void wiiuse_set_nunchuk_accel_threshold(struct wiimote_t* w
 
 /* speaker.c */
 WIIUSE_EXPORT extern void wiiuse_set_speaker(struct wiimote_t* wm, int status);
-WIIUSE_EXPORT extern void wiiuse_play_sound(struct wiimote_t* wm, byte *data, int size);
+WIIUSE_EXPORT extern void wiiuse_mute_speaker(struct wiimote_t* wm, int status);
+WIIUSE_EXPORT extern byte* wiiuse_convert_wav(const char *path);
+WIIUSE_EXPORT extern void wiiuse_play_sound(struct wiimote_t* wm, byte *data, int size, byte freq);
 
 
 #ifdef __cplusplus

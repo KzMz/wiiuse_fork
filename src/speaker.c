@@ -10,6 +10,9 @@
 #include "definitions.h"
 #include "wiiuse_internal.h"
 
+byte * wiiuse_convert_wav(const char *path) {
+
+}
 
 void wiiuse_mute_speaker(struct wiimote_t *wm, int status) {
 
