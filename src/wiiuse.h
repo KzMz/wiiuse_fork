@@ -114,6 +114,10 @@
 #define GUITAR_HERO_3_BUTTON_STRUM_DOWN	0x4000
 #define GUITAR_HERO_3_BUTTON_ALL		0xFEFF
 
+#define WIIUSE_SAMPLE_FORMAT_8BIT_PCM		0x40
+#define WIIUSE_SAMPLE_FORMAT_4BIT_PCM		0x00
+
+#define WIIUSE_SPEAKER_DEFAULT_FREQ		3000
 
 /* wiimote option flags */
 #define WIIUSE_SMOOTHING				0x01
@@ -372,6 +376,14 @@ typedef struct ir_t {
 	float z;						/**< calculated distance				*/
 } ir_t;
 
+/**
+ *	@struct speaker_t
+ *	@brief Speaker struct. Holds volume and frequence values.
+ */
+typedef struct speaker_t {
+	byte volume;					/**< output volume of the speaker (default 0x40)		*/
+	byte freq;					/**< output frequence of sample */
+} speaker_t;
 
 /**
  *	@struct joystick_t
@@ -436,6 +448,8 @@ typedef struct classic_ctrl_t {
 	struct joystick_t ljs;			/**< left joystick calibration				*/
 	struct joystick_t rjs;			/**< right joystick calibration				*/
 } classic_ctrl_t;
+
+
 
 
 /**
@@ -565,6 +579,8 @@ typedef struct wiimote_t {
 	WCONST struct gforce_t gforce;			/**< current gravity forces on each axis	*/
 
 	WCONST struct ir_t ir;					/**< IR data								*/
+	
+	WCONST struct speaker_t speaker;			/**< speaker information						*/
 
 	WCONST unsigned short btns;				/**< what buttons have just been pressed	*/
 	WCONST unsigned short btns_held;		/**< what buttons are being held down		*/
@@ -648,8 +664,12 @@ WIIUSE_EXPORT extern void wiiuse_set_nunchuk_accel_threshold(struct wiimote_t* w
 /* speaker.c */
 WIIUSE_EXPORT extern void wiiuse_set_speaker(struct wiimote_t* wm, int status);
 WIIUSE_EXPORT extern void wiiuse_mute_speaker(struct wiimote_t* wm, int status);
-WIIUSE_EXPORT extern byte* wiiuse_convert_wav(const char *path);
-WIIUSE_EXPORT extern void wiiuse_play_sound(struct wiimote_t* wm, byte *data, int size, byte freq);
+WIIUSE_EXPORT extern byte* wiiuse_convert_wav(const char *path, byte type);
+WIIUSE_EXPORT extern void wiiuse_play_sound(struct wiimote_t* wm, byte *data, int size);
+WIIUSE_EXPORT extern void wiiuse_enable_speaker(struct wiimote_t *wm);
+WIIUSE_EXPORT extern void wiiuse_disable_speaker(struct wiimote_t *wm);
+WIIUSE_EXPORT extern void wiiuse_set_speaker_freq(struct wiimote_t *wm, int freq);
+WIIUSE_EXPORT extern void wiiuse_set_speaker_vol(struct wiimote_t *wm, byte vol);
 
 
 #ifdef __cplusplus
